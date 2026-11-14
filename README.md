@@ -2,6 +2,14 @@
 
 > **Measured, not estimated.** Real throughput numbers for a 1.2B-parameter LLM running locally on an 8 GB, 2021-era laptop (Intel i5-1135G7, Iris Xe, Windows 10). No cloud, no dedicated GPU, no server.
 
+## Origin
+
+This benchmark started from a specific claim: "LFM2.5-1.2B runs at 40-70 tokens per second on an Intel i5-1135G7 with Iris Xe via Vulkan, out-of-the-box." The claim was unverified. Most LLM benchmarks use dedicated GPUs or high-end CPUs with 32+ GB RAM. This work tests the realistic scenario: a 5-year-old 8 GB laptop with integrated graphics.
+
+The finding that CPU (AVX2/OpenVINO) beats the integrated GPU by 2.7x for a 1.2B model is counter-intuitive and rarely documented. The benchmark also uncovered a crash in optimum-cli export openvino (access violation 0xC0000005), documented as upstream issue #2102 on huggingface/optimum-intel.
+
+The methodology, all commands, and all measurements are included so anyone can reproduce the results on their own hardware.
+
 ![Throughput comparison](figures/fig1_throughput.png)
 
 ## TL;DR
