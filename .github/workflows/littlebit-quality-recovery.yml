@@ -45,16 +45,11 @@ jobs:
       LITTLEBIT_COMMIT: 42d658b0c79f76450b34b6a3547462c7cdc3e1a0
       OUTPUT_NAME: qwen25-05b-littlebit2-${{ inputs.eff_bit }}bpw
     steps:
-      - name: Verify CUDA and BF16 hardware
-        run: |
-          nvidia-smi
-          python3 - <<'PY'
-          import torch
-          assert torch.cuda.is_available(), "CUDA GPU is required; refusing CPU fallback"
-          assert torch.cuda.is_bf16_supported(), "A BF16-capable GPU is required by Samsung's trainer"
-          print("GPU:", torch.cuda.get_device_name(0))
-          print("PyTorch:", torch.__version__, "CUDA:", torch.version.cuda)
-          PY
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Verify GPU runner is present
+        run: nvidia-smi
       - name: Fetch pinned Samsung LittleBit source
         run: |
           git clone https://github.com/SamsungLabs/LittleBit.git littlebit-src
@@ -62,11 +57,22 @@ jobs:
       - name: Install training dependencies
         working-directory: littlebit-src
         run: |
-          python3 -m pip install --upgrade pip
-          python3 -m pip install torch==2.8.0+cu124 --index-url https://download.pytorch.org/whl/cu124
+          sudo apt-get update
+          sudo apt-get install -y libopenmpi-dev
+          python -m pip install --upgrade pip
+          python -m pip install torch==2.8.0+cu124 --index-url https://download.pytorch.org/whl/cu124
           grep -v '^torch==' requirements.txt > /tmp/littlebit-requirements.txt
-          python3 -m pip install -r /tmp/littlebit-requirements.txt
-          python3 -m pip install "transformers==4.51.3" deepspeed tensorboard
+          python -m pip install -r /tmp/littlebit-requirements.txt
+          python -m pip install "transformers==4.51.3" deepspeed tensorboard
+      - name: Verify CUDA and BF16 hardware
+        run: |
+          python - <<'PY'
+          import torch
+          assert torch.cuda.is_available(), "CUDA GPU is required; refusing CPU fallback"
+          assert torch.cuda.is_bf16_supported(), "A BF16-capable GPU is required by Samsung's trainer"
+          print("GPU:", torch.cuda.get_device_name(0))
+          print("PyTorch:", torch.__version__, "CUDA:", torch.version.cuda)
+          PY
       - name: Run Samsung teacher-guided LittleBit-2 QAT
         working-directory: littlebit-src
         run: |
