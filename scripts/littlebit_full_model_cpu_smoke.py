@@ -1,5 +1,7 @@
 """End-to-end CPU-only LittleBit checkpoint smoke test.
 
+Hosted-runner retry after correcting upstream package initialisation.
+
 This deliberately uses the public Qwen2.5-0.5B-Instruct base model, applies
 LittleBit's SVD factorisation, saves a local packed checkpoint, reloads it
 through LittleBitModel.from_pretrained(device="cpu"), and generates tokens.
