@@ -9,23 +9,23 @@ on:
 jobs:
   littlebit-layer-openvino:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 35
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Install CPU PyTorch and OpenVINO
+      - name: Install CPU PyTorch, Transformers and OpenVINO
         run: |
           python -m pip install --upgrade pip
           python -m pip install torch==2.6.0 --index-url https://download.pytorch.org/whl/cpu
-          python -m pip install openvino pytest safetensors
+          python -m pip install openvino pytest safetensors "transformers==4.51.3" accelerate
       - name: Fetch pinned LittleBit source
         run: |
           git clone https://github.com/andiekobbietks/LittleBit.git third_party/LittleBit
           git -C third_party/LittleBit checkout 42d658b0c79f76450b34b6a3547462c7cdc3e1a0
           git -C third_party/LittleBit rev-parse HEAD
-      - name: Test upstream LittleBit CPU forward and OpenVINO conversion
+      - name: Test upstream LittleBit layer and Qwen2.5 CPU inference
         env:
           PYTHONPATH: third_party/LittleBit
-        run: python -m pytest -q tests/test_littlebit_openvino.py
+        run: python -m pytest -q tests/test_littlebit_openvino.py tests/test_qwen25_littlebit_cpu.py
