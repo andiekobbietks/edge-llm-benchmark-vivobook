@@ -67,16 +67,26 @@ def main():
         logits = compiled({"input_ids": inputs, "attention_mask": mask})[compiled.output(0)]
         print(f"OpenVINO greedy token {step+1}/{MAX_NEW_TOKENS}: {next_id}", flush=True)
     text_out = tokenizer.decode(generated, skip_special_tokens=True)
+    unique_token_count = len(set(generated))
+    longest_same_token_run = 1
+    current_run = 1
+    for previous, current in zip(generated, generated[1:]):
+        current_run = current_run + 1 if current == previous else 1
+        longest_same_token_run = max(longest_same_token_run, current_run)
+    repetition_detected = (
+        len(generated) >= 4
+        and (unique_token_count <= 2 or longest_same_token_run >= 4)
+    )
     report = {
         "base_model": BASE_MODEL, "device": "OpenVINO CPU",
         "openvino_version": ov.__version__,
         "graph": "full LittleBit Qwen2.5-0.5B forward graph with dynamic sequence axis",
         "max_absolute_error_vs_pytorch": max_abs, "cosine_similarity_vs_pytorch": cosine,
         "greedy_decode_tokens": len(generated), "generated_token_ids": generated,
-        "generated_text": text_out, "kv_cache": False,
+        "generated_text": text_out, "unique_generated_tokens": unique_token_count,\n        "longest_same_token_run": longest_same_token_run,\n        "repetition_detected": repetition_detected, "kv_cache": False,
         "decode_method": "autoregressive greedy; recompute entire prefix each token",
         "elapsed_seconds": round(time.perf_counter()-started, 3),
-        "status": "PASS" if np.isfinite(logits).all() and max_abs <= 5e-3 and len(generated)==MAX_NEW_TOKENS else "FAIL",
+        "execution_status": "PASS" if np.isfinite(logits).all() and max_abs <= 5e-3 and len(generated)==MAX_NEW_TOKENS else "FAIL",\n        "quality_status": "FAIL_REPETITION" if repetition_detected else "REQUIRES_HUMAN_REVIEW",\n        "status": "PASS" if np.isfinite(logits).all() and max_abs <= 5e-3 and len(generated)==MAX_NEW_TOKENS and not repetition_detected else "FAIL",
         "limitations": ["No KV cache; not a throughput benchmark",
                         "SVD initialisation only; no QAT or distillation",
                         "This is hosted x86 CPU, not Intel Iris Xe validation"]
