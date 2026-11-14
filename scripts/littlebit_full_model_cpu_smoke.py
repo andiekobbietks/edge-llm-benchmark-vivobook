@@ -74,7 +74,8 @@ def main() -> None:
     wrapped = LittleBitModel(model=model, config=config, base_model_id=BASE_MODEL)
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     wrapped._save_pretrained(OUTPUT_DIR)
-    print(f"Saved packed LittleBit checkpoint: {OUTPUT_DIR}", flush=True)
+    tokenizer.save_pretrained(OUTPUT_DIR)
+    print(f"Saved packed LittleBit checkpoint and tokenizer: {OUTPUT_DIR}", flush=True)
 
     del wrapped, model
     import gc
