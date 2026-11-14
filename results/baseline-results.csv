@@ -1,0 +1,6 @@
+date,model,runtime,version,quantization,device,threads,tokens_per_second,notes
+2026-11-03,LFM2.5-1.2B,Ollama,0.40.13,Q8_0,CPU AVX2,default,28.0,Historical single-run baseline
+2026-11-03,LFM2.5-1.2B,Ollama,0.40.13,Q8_0,Vulkan Iris Xe,default,14.5,Historical single-run baseline
+2026-11-03,LFM2.5-1.2B,Ollama,0.40.13,Q4_0 QAD,CPU AVX2,default,38.3,Historical single-run baseline
+2026-11-03,LFM2.5-1.2B,OpenVINO GenAI,2026.4.1,INT4 group quantized,CPU,8,40.96,Historical single-run baseline
+2026-11-03,LFM2.5-1.2B,OpenVINO GenAI,2026.4.1,INT4 group quantized,Iris Xe GPU,default,15.28,Historical single-run baseline
