@@ -76,6 +76,7 @@ jobs:
       - name: Run Samsung teacher-guided LittleBit-2 QAT
         working-directory: littlebit-src
         run: |
+          set -o pipefail
           deepspeed --num_gpus=1 main.py \
             --model_id "$BASE_MODEL" \
             --dataset "$DATASET" \
@@ -100,6 +101,7 @@ jobs:
       - name: Evaluate held-out WikiText-2 perplexity
         working-directory: littlebit-src
         run: |
+          set -o pipefail
           python3 eval.py \
             --model_id "./outputs/$OUTPUT_NAME" \
             --ppl_task wikitext2 \
