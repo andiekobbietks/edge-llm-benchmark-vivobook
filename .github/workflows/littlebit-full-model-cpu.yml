@@ -35,7 +35,12 @@ jobs:
           old = "model_config = dict(self.model.config)"
           new = "model_config = self.model.config.to_dict() if hasattr(self.model.config, 'to_dict') else dict(self.model.config)"
           assert old in s, "Expected upstream config serializer not found"
-          p.write_text(s.replace(old, new))
+          s = s.replace(old, new)
+          # Safetensors rejects tied HF tensors; clone the state dict entries before serialization.
+          marker = 'save_file(state_dict, str(save_directory / "model.safetensors"))'
+          replacement = 'state_dict = {name: tensor.contiguous().clone() for name, tensor in state_dict.items()}\\n        save_file(state_dict, str(save_directory / "model.safetensors"))'
+          assert marker in s, "Expected LittleBit safetensors save call not found"
+          p.write_text(s.replace(marker, replacement))
           PY
       - name: Convert, save, reload and generate on CPU
         env:
