@@ -26,7 +26,7 @@ jobs:
         run: |
           git clone https://github.com/SamsungLabs/LittleBit.git third_party/LittleBit
           git -C third_party/LittleBit checkout 42d658b0c79f76450b34b6a3547462c7cdc3e1a0
-          printf '%s\\n' '"""LittleBit utilities; explicit imports avoid upstream eager circular import."""' > third_party/LittleBit/quantization/utils/__init__.py
+          echo '"""LittleBit utilities; explicit imports avoid upstream eager circular import."""' > third_party/LittleBit/quantization/utils/__init__.py
       - name: Convert, save, reload and generate on CPU
         env:
           PYTHONPATH: third_party/LittleBit
