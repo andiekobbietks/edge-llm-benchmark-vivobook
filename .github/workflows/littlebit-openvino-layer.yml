@@ -25,6 +25,8 @@ jobs:
           git clone https://github.com/andiekobbietks/LittleBit.git third_party/LittleBit
           git -C third_party/LittleBit checkout 42d658b0c79f76450b34b6a3547462c7cdc3e1a0
           git -C third_party/LittleBit rev-parse HEAD
+          # Avoid upstream eager-import cycle: modules -> utils.binary_packer -> utils.__init__ -> quant_util -> modules.
+          printf '%s\n' '"""LittleBit utilities; keep imports explicit to avoid an upstream circular import."""' > third_party/LittleBit/quantization/utils/__init__.py
       - name: Test upstream LittleBit layer and Qwen2.5 CPU inference
         env:
           PYTHONPATH: third_party/LittleBit
