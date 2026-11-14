@@ -12,6 +12,8 @@ jobs:
   full-model-openvino-cpu:
     runs-on: ubuntu-latest
     timeout-minutes: 90
+    env:
+      LITTLEBIT_OV_MAX_NEW_TOKENS: "8"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
