@@ -27,6 +27,16 @@ jobs:
           git clone https://github.com/SamsungLabs/LittleBit.git third_party/LittleBit
           git -C third_party/LittleBit checkout 42d658b0c79f76450b34b6a3547462c7cdc3e1a0
           echo '"""LittleBit utilities; explicit imports avoid upstream eager circular import."""' > third_party/LittleBit/quantization/utils/__init__.py
+          # Patch upstream Hub serializer to use the HF PretrainedConfig API.
+          python - <<'PY'
+          from pathlib import Path
+          p = Path("third_party/LittleBit/quantization/hub.py")
+          s = p.read_text()
+          old = "model_config = dict(self.model.config)"
+          new = "model_config = self.model.config.to_dict() if hasattr(self.model.config, 'to_dict') else dict(self.model.config)"
+          assert old in s, "Expected upstream config serializer not found"
+          p.write_text(s.replace(old, new))
+          PY
       - name: Convert, save, reload and generate on CPU
         env:
           PYTHONPATH: third_party/LittleBit
