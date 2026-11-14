@@ -131,6 +131,13 @@ The crash report is a candidate for an upstream issue on `huggingface/optimum-in
 - No statistical significance testing (single run per configuration). Variance is typically ±2–5%.
 - Windows 10 only. Linux (WSL) may yield different results, especially for conversion.
 
+## Related
+
+- [weight-space-programming](https://github.com/andiekobbietks/weight-space-programming): analysis of LLMs writing neural network weights directly (Weight-Space Programming)
+- [esp32-cisco-ot-bridge](https://github.com/andiekobbietks/esp32-cisco-ot-bridge): Industry 4.0 IoT edge project (ESP32 + Cisco OT/IT)
+- [ai-hype-auditing](https://github.com/andiekobbietks/ai-hype-auditing): forensic methodology for auditing AI claims
+- [sovereign-edge-ai-research](https://github.com/andiekobbietks/sovereign-edge-ai-research): research portfolio connecting all threads
+
 ## Author
 
 **andiekobbietks** — AFJ / AK Build
