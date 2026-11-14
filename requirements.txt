@@ -1,0 +1,4 @@
+# Install OpenVINO GenAI using the official package matching your Python/OS.
+openvino-genai
+psutil
+numpy
