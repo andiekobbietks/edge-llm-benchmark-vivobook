@@ -24,7 +24,7 @@ OpenVINO CPU thread scaling: 4 threads = 34.96 tok/s; 8 threads = 40.85 tok/s; a
 
 **Interpretation:** on this particular Tiger Lake / 8 GB machine, CPU inference beat the tested iGPU paths for this 1.2B model. This is a device- and workload-specific observation, not a universal rule.
 
-See [RESEARCH_NOTES.md](RESEARCH_NOTES.md) for the detailed experiment record and [docs/hardware-profile.md](docs/hardware-profile.md) for the machine profile.
+See [RESEARCH_NOTES.md](RESEARCH_NOTES.md) for the detailed experiment record, [docs/hardware-profile.md](docs/hardware-profile.md) for the machine profile, and [docs/failed-experiments.md](docs/failed-experiments.md) for allocation failures and conversion issues.
 
 ## New workstream: LittleBit × OpenVINO × Intel
 
