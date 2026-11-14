@@ -1,0 +1,39 @@
+name: LittleBit CPU-side validation
+
+on:
+  push:
+    branches: [research/littlebit-openvino-intel]
+    paths:
+      - "scripts/**"
+      - "notebooks/**"
+      - ".github/workflows/littlebit-cpu-validation.yml"
+  pull_request:
+    branches: [research/littlebit-openvino-intel]
+  workflow_dispatch:
+
+jobs:
+  static-validation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Compile Python scripts
+        run: python -m compileall -q scripts
+      - name: Validate Colab notebook JSON and required safety gates
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p = Path("notebooks/littlebit-quality-recovery-colab.ipynb")
+          nb = json.loads(p.read_text(encoding="utf-8"))
+          assert nb["nbformat"] == 4
+          code = "\n".join("".join(c.get("source", [])) for c in nb["cells"] if c["cell_type"] == "code")
+          assert "torch.cuda.is_available()" in code
+          assert "torch.cuda.is_bf16_supported()" in code
+          assert "42d658b0c79f76450b34b6a3547462c7cdc3e1a0" in code
+          assert "'1.0'" in code
+          assert "main.py" in code and "eval.py" in code
+          print(f"Notebook valid: {len(nb['cells'])} cells")
+          PY
