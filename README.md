@@ -36,6 +36,15 @@ The new branch `research/littlebit-openvino-intel` adds a CUDA-free investigatio
 - [Environment capture](scripts/collect_system.py)
 - [OpenVINO GenAI benchmark runner](scripts/benchmark_openvino.py)
 
+### Quality recovery: GPU training is external to GitHub Actions
+
+GitHub-hosted runners available to this project do not provide a CUDA GPU. The former self-hosted-GPU workflow has therefore been removed rather than left as a misleading, non-runnable path.
+
+- [Open Google Colab quality-recovery notebook](notebooks/littlebit-quality-recovery-colab.ipynb)
+- [CPU-side static validation workflow](.github/workflows/littlebit-cpu-validation.yml)
+
+The notebook pins Samsung's upstream commit, requires a CUDA GPU with BF16 support (L4/A100 class; a T4 may be rejected), runs the upstream teacher-guided training entry point, evaluates WikiText-2 perplexity, and saves checkpoint/logs to Google Drive. It is an executable runbook, not evidence that training has already completed. The first run is configured at 1.0 effective bits/weight. Actual quality recovery is only established after training completes and the perplexity/generation evidence is reviewed.
+
 ### Important technical boundary
 
 Samsung's official LittleBit repository is a research implementation whose documented training/evaluation workflow currently assumes CUDA. Its README describes low-rank latent factorisation, binarised factors and learned scales; LittleBit-2 adds Joint-ITQ initialisation. That does **not** establish that its checkpoint format or operators are natively supported by OpenVINO.
