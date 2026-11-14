@@ -1,6 +1,6 @@
 """End-to-end CPU-only LittleBit checkpoint smoke test.
 
-Hosted-runner retry after correcting upstream package initialisation.
+Hosted-runner retry including tied-weight safetensors serialization fix.
 
 This deliberately uses the public Qwen2.5-0.5B-Instruct base model, applies
 LittleBit's SVD factorisation, saves a local packed checkpoint, reloads it
