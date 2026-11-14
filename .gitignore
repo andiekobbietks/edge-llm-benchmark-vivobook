@@ -1,0 +1,15 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+ov_model/
+models/
+checkpoints/
+outputs/
+*.gguf
+*.safetensors
+*.bin
+results/*-run.jsonl
+results/system-profile.json
+!results/baseline-results.csv
