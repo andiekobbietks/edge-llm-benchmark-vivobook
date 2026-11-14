@@ -38,7 +38,7 @@ jobs:
           s = s.replace(old, new)
           # Safetensors rejects tied HF tensors; clone the state dict entries before serialization.
           marker = 'save_file(state_dict, str(save_directory / "model.safetensors"))'
-          replacement = 'state_dict = {name: tensor.contiguous().clone() for name, tensor in state_dict.items()}\n        save_file(state_dict, str(save_directory / "model.safetensors"))'
+          replacement = 'state_dict = {name: tensor.contiguous().clone() for name, tensor in state_dict.items()}\n            save_file(state_dict, str(save_directory / "model.safetensors"))'
           assert marker in s, "Expected LittleBit safetensors save call not found"
           p.write_text(s.replace(marker, replacement))
           PY
