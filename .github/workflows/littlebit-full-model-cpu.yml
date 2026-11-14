@@ -41,6 +41,14 @@ jobs:
           replacement = 'state_dict = {name: tensor.contiguous().clone() for name, tensor in state_dict.items()}\n            save_file(state_dict, str(save_directory / "model.safetensors"))'
           assert marker in s, "Expected LittleBit safetensors save call not found"
           p.write_text(s.replace(marker, replacement))
+          # Qwen2 is already supported by the installed Transformers package.
+          # Disable the remote-code dynamic loader, which mis-parses the fully
+          # qualified upstream auto_map entry when reloading the local checkpoint.
+          q = Path("third_party/LittleBit/quantization/utils/quant_util.py")
+          t = q.read_text()
+          loader = "AutoModelForCausalLM.from_config(config, trust_remote_code=True)"
+          assert loader in t, "Expected quantized-model config loader not found"
+          q.write_text(t.replace(loader, "AutoModelForCausalLM.from_config(config, trust_remote_code=False)"))
           PY
       - name: Convert, save, reload and generate on CPU
         env:
