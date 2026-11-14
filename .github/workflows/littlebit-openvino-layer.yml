@@ -19,7 +19,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           python -m pip install torch==2.6.0 --index-url https://download.pytorch.org/whl/cpu
-          python -m pip install openvino pytest
+          python -m pip install openvino pytest safetensors
       - name: Fetch pinned LittleBit source
         run: |
           git clone https://github.com/andiekobbietks/LittleBit.git third_party/LittleBit
